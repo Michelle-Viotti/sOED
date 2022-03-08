@@ -74,6 +74,7 @@ class PGsOED(SOED):
                 It will be abbreviated as noise_r_s in this class.
         The corresponding noise will follow a gaussian distribution with mean
         noise_loc, std (noise_base_scale + noise_ratio_scale * abs(G)).
+        NOTE: this parameter specifies the noisiness of observations, which has nothing to do with adding noise to encourage exploration.
     reward_fun : function, optional(default=None)
         User-provided non-KL-divergence based reward function 
         g_k(x_k, d_k, y_k). It will be abbreviated as nlkd_rw_f inside this 
@@ -232,9 +233,9 @@ class PGsOED(SOED):
         self.get_policy = self.get_actor
 
     def initialize(self):
-        self.initialize_actor(self.actor_dimns)
+        self.initialize_actor(self.actor_dimns) 
         self.initialize_critic(self.critic_dimns)
-        self.design_noise_scale = None
+        self.design_noise_scale = None # Slightly confused as to what this does, but think it is actually declaring a new variable!
 
     def initialize_actor(self, actor_dimns=None):
         """
@@ -527,6 +528,7 @@ class PGsOED(SOED):
                              (n_design), optional(default=None)
             The scale of additive exploration Gaussian noise on each dimension 
             of design variable.
+            NOTE: this is what we need to neutralise =)
         design_noise_decay : int or float, optional(default=0.99)
             The decay weight of design_noise_scale. The decay following
             design_noise_scale = design_noise_scale * design_noise_decay is 
@@ -574,10 +576,10 @@ class PGsOED(SOED):
         else:
             self.critic_lr_scheduler = critic_lr_scheduler
         if design_noise_scale is None:
+        # changed
             if self.design_noise_scale is None:
-                self.design_noise_scale = (self.design_bounds[:, 1] - 
-                                           self.design_bounds[:, 0]) / 20
-                self.design_noise_scale[self.design_noise_scale == np.inf] = 5
+                self.design_noise_scale = np.zeros(self.n_design)
+                self.design_noise_scale[self.design_noise_scale == np.inf] = 5 # this is really confusing, but I'll leave it for now
         elif isinstance(design_noise_scale, (list, tuple)):
             self.design_noise_scale = np.array(design_noise_scale)
         else:
@@ -586,7 +588,7 @@ class PGsOED(SOED):
 
         for l in range(n_update):
             print('Update Level', self.update)
-            self.asses(n_traj, self.design_noise_scale)
+            self.asses(n_traj, self.design_noise_scale) # shows may need to check asses
 
             # Form the inputs and target values of critic network, and form the 
             # inputs of the actor network.
@@ -667,7 +669,7 @@ class PGsOED(SOED):
             self.actor_lr_scheduler.step()
 
             self.update += 1
-            self.design_noise_scale *= design_noise_decay
+            self.design_noise_scale *= design_noise_decay # check if still valid for none
 
     def asses(self, n_traj=10000, design_noise_scale=None,
               return_all=False, store_belief_state=False):
