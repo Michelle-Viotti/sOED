@@ -26,6 +26,8 @@ class SOED(object):
         Forward model function G_k(theta, d_k, x_{k,p}). It will be abbreviated 
         as m_f inside this class.
         The forward model function should take following inputs:
+            * stage, int
+                Stage of the experiment.
             * theta, numpy.ndarray of size (n_sample or 1, n_param)
                 Parameter samples.
             * d, numpy.ndarray of size (n_sample or 1, n_design)
