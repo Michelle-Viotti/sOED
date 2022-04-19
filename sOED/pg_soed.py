@@ -795,8 +795,12 @@ class PGsOED(SOED):
                                                          None,
                                                          None)
                     print('*' * (progress_points == i).sum(), end='')
+                    
+        # calculate averaged reward
         averaged_reward = rewards_hist.sum(-1).mean()
         print("\nAveraged total reward:  {:.4}".format(averaged_reward))
+        
+        # make history available globally within the class PGsOED
         self.averaged_reward = averaged_reward
         self.thetas = thetas
         self.dcs_hist = dcs_hist
