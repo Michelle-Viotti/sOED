@@ -74,12 +74,11 @@ class PGsOED(SOED):
                 It will be abbreviated as noise_r_s in this class.
         The corresponding noise will follow a gaussian distribution with mean
         noise_loc, std (noise_base_scale + noise_ratio_scale * abs(G)).
-        NOTE: this parameter specifies the noisiness of observations, which has nothing to do with adding noise to encourage exploration.
-    reward_fun : function, optional(default=None)
+    reward_fun : function or string "sPCE", optional(default=None)
         User-provided non-KL-divergence based reward function 
-        g_k(x_k, d_k, y_k). It will be abbreviated as nlkd_rw_f inside this 
-        class.
-        The reward function should take following inputs:
+        g_k(x_k, d_k, y_k), or string "sPCE". If it is a function, it will be
+        abbreviated as nlkd_rw_f inside this class.
+        The function should take following inputs:
             * stage : int
                 The stage index of the experiment.
             * xb : numpy.ndarray of size (n_grid ** n_param, n_param + 1)
@@ -92,8 +91,12 @@ class PGsOED(SOED):
                 The observation.
         and the output is 
             * A float which is the reward.
-        Note that the information gain is computed within this class, and does
-        not needed to be included in reward_fun.
+        Note that for any user-provided non-KL-divergence reward function, 
+        the information gain is still automatically computed within this class 
+        and summed to reward_fun.
+        When reward_fun is "sPCE", the reward is computed using sequential prior
+        constrastive estimation. asses calls the method get_sPCE_reward in 
+        soed.py. 
         When reward_fun is None, the stage reward would be 0, only KL divergence
         from the prior to the posterior will be considered.
     phys_state_info : list, tuple or numpy.ndarray of size (3), 
@@ -770,12 +773,20 @@ class PGsOED(SOED):
                                       + self.noise_r_s * np.abs(Gs))
                 ys_hist[:, k, :] = ys
                 # Get rewards.
-                for i in range(n_traj):
-                    rewards_hist[i, k] = self.get_reward(k, 
-                                                         None, 
-                                                         xps_hist[i, k],
-                                                         ds[i],
-                                                         ys[i])
+                if not (reward_fun == "sPCE"):
+                    for i in range(n_traj):
+                        rewards_hist[i, k] = self.get_reward(k, 
+                                                             None, 
+                                                             xps_hist[i, k],
+                                                             ds[i],
+                                                             ys[i])
+                else:
+                    for i in range(n_traj):
+                        rewards_hist[i, k] = self.get_sPCE_reward(k, 
+                                                                  None, 
+                                                                  xps_hist[i, k],
+                                                                  ds[i],
+                                                                  ys[i]) # probably could just substitute 0 if I wanted to do bad things.
                 # Update physical state.
                 xps = self.xp_f(xps_hist[:, k],
                                 k,
@@ -788,12 +799,19 @@ class PGsOED(SOED):
                                      y_hist=ys_hist[i])
                     if store_belief_state:
                         xbs[i] = xb
-                    # Get reward.
-                    rewards_hist[i, k] = self.get_reward(k, 
-                                                         xb, 
-                                                         xps_hist[i, k],
-                                                         None,
-                                                         None)
+                    # Get reward. NOTE I'M NOT VERY CONVINCED THIS WORK PLEASE CHECK IT TOMORROW
+                    if not (reward_fun == sPCE):
+                        rewards_hist[i, k] = self.get_reward(k, 
+                                                             xb, 
+                                                             xps_hist[i, k],
+                                                             None,
+                                                             None)
+                    else:
+                        rewards_hist[i, k] = self.get_sPCE_reward(k, 
+                                                                  xb, 
+                                                                  xps_hist[i, k],
+                                                                  None,
+                                                                  None)
                     print('*' * (progress_points == i).sum(), end='')
                     
         # calculate averaged reward
