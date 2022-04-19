@@ -674,7 +674,7 @@ class PGsOED(SOED):
     def asses(self, n_traj=10000, design_noise_scale=None,
               return_all=False, store_belief_state=False):
         """
-        A function to asses the performance of current policy.
+        A function to assess the performance of current policy.
 
         Parameters
         ----------
@@ -717,9 +717,9 @@ class PGsOED(SOED):
         Returns
         -------
         A float which is the averaged total reward.
-        (optionally) other assesment results.
+        (optionally) other assessment results.
         """
-        # Generate prior samples.
+        # initialise the scale of design noise.
         if design_noise_scale is None:
             design_noise_scale = np.zeros(self.n_design)
         elif isinstance(design_noise_scale, (int, float)):
@@ -727,7 +727,11 @@ class PGsOED(SOED):
         elif isinstance(design_noise_scale, (list, tuple, np.ndarray)):
             assert (isinstance(design_noise_scale, (list, tuple, np.ndarray))
                     and len(design_noise_scale) == self.n_design)
+        
+        # sample values of theta from the prior distribution.
         thetas = self.prior_rvs(n_traj)
+        
+        # initialise variables to track history.
         dcs_hist = np.zeros((n_traj, self.n_stage, self.n_design))
         ds_hist = np.zeros((n_traj, self.n_stage, self.n_design))
         ys_hist = np.zeros((n_traj, self.n_stage, self.n_obs))
@@ -742,6 +746,7 @@ class PGsOED(SOED):
         rewards_hist = np.zeros((n_traj, self.n_stage + 1))
         progress_points = np.rint(np.linspace(0, n_traj - 1, 30))
 
+        # determine next design > run experiment > determine step-by-step rewards
         for k in range(self.n_stage + 1):
             if k < self.n_stage:
                 # Get clean designs.
