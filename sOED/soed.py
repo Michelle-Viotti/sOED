@@ -326,10 +326,8 @@ class SOED(object):
         # Non-KL-divergence based reward function
         if reward_fun is None:
             self.nkld_rw_f = lambda *args, **kws: 0
-        elif reward_fun == "sPCE":
-            pass
         else:
-            assert callable(reward_fun), (
+            assert (callable(reward_fun) or (reward_fun == "sPCE")), (
                    "reward_fun should be a function or the string \"sPCE\".")
             self.nkld_rw_f = reward_fun
 
