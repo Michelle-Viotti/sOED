@@ -784,9 +784,9 @@ class PGsOED(SOED):
                     for i in range(n_traj):
                         rewards_hist[i, k] = self.get_sPCE_reward(stage=k, 
                                                                   L=100, 
-                                                                  xp_hist=xps_hist[i, :k, :],
-                                                                  d_hist=dcs_hist[i, :k, :],
-                                                                  y_hist=ys_hist[i, :k, :])
+                                                                  xp_hist=xps_hist[i, :k+2, :],
+                                                                  d_hist=dcs_hist[i, :k+1, :],
+                                                                  y_hist=ys_hist[i, :k+1, :])
                 # Update physical state.
                 xps = self.xp_f(xps_hist[:, k],
                                 k,
@@ -809,9 +809,9 @@ class PGsOED(SOED):
                     else:
                         rewards_hist[i, k] = self.get_sPCE_reward(stage=k, 
                                                                   L=100, 
-                                                                  xp_hist=xps_hist[i, :k, :],
-                                                                  d_hist=dcs_hist[i, :k, :],
-                                                                  y_hist=ys_hist[i, :k, :])
+                                                                  xp_hist=xps_hist[i, :k+2, :],
+                                                                  d_hist=dcs_hist[i, :k+1, :],
+                                                                  y_hist=ys_hist[i, :k+1, :])
                     print('*' * (progress_points == i).sum(), end='')
                     
         # calculate averaged reward
