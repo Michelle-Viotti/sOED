@@ -800,7 +800,7 @@ class PGsOED(SOED):
                     if store_belief_state:
                         xbs[i] = xb
                     # Get reward. NOTE I'M NOT VERY CONVINCED THIS WORK PLEASE CHECK IT TOMORROW
-                    if not (reward_fun == sPCE):
+                    if not (reward_fun == "sPCE"):
                         rewards_hist[i, k] = self.get_reward(k, 
                                                              xb, 
                                                              xps_hist[i, k],
