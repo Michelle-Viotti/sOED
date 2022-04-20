@@ -782,11 +782,11 @@ class PGsOED(SOED):
                                                              ys[i])
                 else:
                     for i in range(n_traj):
-                        rewards_hist[i, k] = self.get_sPCE_reward(k, 
-                                                                  None, 
-                                                                  xps_hist[i, k],
-                                                                  ds[i],
-                                                                  ys[i]) # probably could just substitute 0 if I wanted to do bad things.
+                        rewards_hist[i, k] = self.get_sPCE_reward(stage=k, 
+                                                                  L=100, 
+                                                                  xp_hist=xps_hist[i, :k, :],
+                                                                  d_hist=dcs_hist[i, :k, :],
+                                                                  y_hist=ys_hist[i, :k, :])
                 # Update physical state.
                 xps = self.xp_f(xps_hist[:, k],
                                 k,
@@ -807,11 +807,11 @@ class PGsOED(SOED):
                                                              None,
                                                              None)
                     else:
-                        rewards_hist[i, k] = self.get_sPCE_reward(k, 
-                                                                  xb, 
-                                                                  xps_hist[i, k],
-                                                                  None,
-                                                                  None)
+                        rewards_hist[i, k] = self.get_sPCE_reward(stage=k, 
+                                                                  L=100, 
+                                                                  xp_hist=xps_hist[i, :k, :],
+                                                                  d_hist=dcs_hist[i, :k, :],
+                                                                  y_hist=ys_hist[i, :k, :])
                     print('*' * (progress_points == i).sum(), end='')
                     
         # calculate averaged reward
