@@ -773,7 +773,7 @@ class PGsOED(SOED):
                                       + self.noise_r_s * np.abs(Gs))
                 ys_hist[:, k, :] = ys
                 # Get rewards.
-                if not (self.reward_fun == "sPCE"):
+                if not (self.nkld_rw_f == "sPCE"):
                     for i in range(n_traj):
                         rewards_hist[i, k] = self.get_reward(k, 
                                                              None, 
@@ -800,7 +800,7 @@ class PGsOED(SOED):
                     if store_belief_state:
                         xbs[i] = xb
                     # Get reward. NOTE I'M NOT VERY CONVINCED THIS WORK PLEASE CHECK IT TOMORROW
-                    if not (self.reward_fun == "sPCE"):
+                    if not (self.nkld_rw_f == "sPCE"):
                         rewards_hist[i, k] = self.get_reward(k, 
                                                              xb, 
                                                              xps_hist[i, k],
