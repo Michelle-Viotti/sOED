@@ -330,7 +330,7 @@ class SOED(object):
             pass
         else:
             assert callable(reward_fun), (
-                   "reward_fun should be a function or the string "sPCE".")
+                   "reward_fun should be a function or the string \"sPCE\".")
             self.nkld_rw_f = reward_fun
 
         if phys_state_info is None:
