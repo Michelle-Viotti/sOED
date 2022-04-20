@@ -326,9 +326,11 @@ class SOED(object):
         # Non-KL-divergence based reward function
         if reward_fun is None:
             self.nkld_rw_f = lambda *args, **kws: 0
+        elif reward_fun == "sPCE":
+            pass
         else:
             assert callable(reward_fun), (
-                   "reward_fun should be a function.")
+                   "reward_fun should be a function or the string "sPCE".")
             self.nkld_rw_f = reward_fun
 
         if phys_state_info is None:
@@ -717,10 +719,10 @@ class SOED(object):
         else:
             return reward_hist.sum()              
         
-    def get_sPCE_reward(self, xb=None, xp=None, d=None, y=None):
+    def get_sPCE_reward(stage, L, d_hist, y_hist, xp_hist):
         """
         A function to compute the total sPCE reward of a given sequence of 
-        designs "d_hist" and observations "y_hist".
+        designs.
 
         Parameters
         ----------
@@ -730,3 +732,15 @@ class SOED(object):
         -------
         A float value which is the total reward.
         """
+        if stage < self.n_stage:
+            thetas_sPCE = prior_rvs(L+1) # should work as uses a lambda trick
+            post_thetas = post_pdf(thetas_sPCE, stage=0, d_hist=d_hist, 
+                                  y_hist=y_hist, xp_hist=xp_hist, 
+                                  include_prior=False) # well...
+
+        # put everything together
+            reward = np.log(post_thetas[0] / (np.sum(post_thetas) / (L+1)))
+
+            return reward
+        else:
+            return 0
