@@ -734,7 +734,7 @@ class SOED(object):
             return 0
             
         else:
-            thetas_sPCE = prior_rvs(L+1) # should work as uses a lambda trick
+            thetas_sPCE = self.prior_rvs(L+1) # should work as uses a lambda trick
             post_thetas = post_pdf(thetas_sPCE, stage=0, d_hist=d_hist, 
                                   y_hist=y_hist, xp_hist=xp_hist, 
                                   include_prior=False) # well...
