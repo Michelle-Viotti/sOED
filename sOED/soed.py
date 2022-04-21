@@ -717,7 +717,7 @@ class SOED(object):
         else:
             return reward_hist.sum()              
         
-    def get_sPCE_reward(stage, L, d_hist, y_hist, xp_hist):
+    def get_sPCE_reward(self, stage, L, d_hist, y_hist, xp_hist):
         """
         A function to compute the total sPCE reward of a given sequence of 
         designs.
