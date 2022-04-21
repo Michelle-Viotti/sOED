@@ -735,9 +735,9 @@ class SOED(object):
             
         else:
             thetas_sPCE = self.prior_rvs(L+1) # should work as uses a lambda trick
-            post_thetas = post_pdf(thetas_sPCE, stage=0, d_hist=d_hist, 
+            post_thetas = self.post_pdf(thetas_sPCE, stage=0, d_hist=d_hist, 
                                   y_hist=y_hist, xp_hist=xp_hist, 
-                                  include_prior=False) # well...
+                                  include_prior=False)
 
             # put everything together
             reward = np.log(post_thetas[0] / (np.sum(post_thetas) / (L+1)))
