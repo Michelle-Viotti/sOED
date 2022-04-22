@@ -783,7 +783,8 @@ class PGsOED(SOED):
                 else:
                     for i in range(n_traj):
                         rewards_hist[i, k] = self.get_sPCE_reward(stage=k, 
-                                                                  L=100, 
+                                                                  L=100,
+                                                                  thetas0=thetas[i, :],
                                                                   xp_hist=xps_hist[i, :k+2, :],
                                                                   d_hist=dcs_hist[i, :k+1, :],
                                                                   y_hist=ys_hist[i, :k+1, :])
@@ -809,6 +810,7 @@ class PGsOED(SOED):
                     else:
                         rewards_hist[i, k] = self.get_sPCE_reward(stage=k, 
                                                                   L=100, 
+                                                                  thetas0=thetas[i, :],
                                                                   xp_hist=xps_hist[i, :k+2, :],
                                                                   d_hist=dcs_hist[i, :k+1, :],
                                                                   y_hist=ys_hist[i, :k+1, :])
