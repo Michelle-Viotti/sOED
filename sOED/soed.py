@@ -717,7 +717,7 @@ class SOED(object):
         else:
             return reward_hist.sum()              
         
-    def get_sPCE_reward(self, stage, L, d_hist, y_hist, xp_hist):
+    def get_sPCE_reward(self, stage, L, thetas0, d_hist, y_hist, xp_hist):
         """
         A function to compute the total sPCE reward of a given sequence of 
         designs.
@@ -734,7 +734,9 @@ class SOED(object):
             return 0
             
         else:
-            thetas_sPCE = self.prior_rvs(L+1) # should work as uses a lambda trick
+            thetas_sPCE = np.zeros((L+1, self.n_param))
+            thetas_sPCE[0] = thetas0
+            thetas_sPCE[1:] = self.prior_rvs(L) # should work as uses a lambda trick
             post_thetas = self.post_pdf(thetas_sPCE, stage=0, d_hist=d_hist, 
                                   y_hist=y_hist, xp_hist=xp_hist, 
                                   include_prior=False)
