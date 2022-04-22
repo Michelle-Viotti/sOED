@@ -422,8 +422,8 @@ class SOED(object):
                 return np.zeros(len(thetas))
         else:
             G = self.m_f(stage, thetas, d_hist[0:1], xp.reshape(1, self.n_xp))
-            loglikeli = norm_logpdf(y_hist[0:1], 
-                                    G + self.noise_loc,
+            loglikeli = norm_pdf(y_hist[0:1], 
+                                    np.log(G) + self.noise_loc,
                                     self.noise_b_s + self.noise_r_s * np.abs(G))
             if xp_hist is not None:
                 next_xp = xp_hist[stage + 1]
