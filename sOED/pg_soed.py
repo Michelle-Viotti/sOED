@@ -768,9 +768,9 @@ class PGsOED(SOED):
                               thetas,
                               ds,
                               xps_hist[:, k, :])
-                ys = np.random.normal(Gs + self.noise_loc,
+                ys = np.exp(np.random.normal(np.log(Gs + self.noise_loc),
                                       self.noise_b_s 
-                                      + self.noise_r_s * np.abs(Gs))
+                                      + self.noise_r_s * np.abs(Gs)))
                 ys_hist[:, k, :] = ys
                 # Get rewards.
                 if not (self.nkld_rw_f == "sPCE"):
