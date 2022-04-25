@@ -795,13 +795,13 @@ class PGsOED(SOED):
                 xps_hist[:, k + 1] = xps
             else:
                 for i in range(n_traj):
-                    # Get terminal belief state.
-                    xb = self.get_xb(d_hist=ds_hist[i],
-                                     y_hist=ys_hist[i])
-                    if store_belief_state:
-                        xbs[i] = xb
-                    # Get reward. NOTE I'M NOT VERY CONVINCED THIS WORK PLEASE CHECK IT TOMORROW
                     if not (self.nkld_rw_f == "sPCE"):
+                        # Get terminal belief state.
+                        xb = self.get_xb(d_hist=ds_hist[i],
+                                         y_hist=ys_hist[i])
+                        if store_belief_state:
+                            xbs[i] = xb
+                        # Get reward
                         rewards_hist[i, k] = self.get_reward(k, 
                                                              xb, 
                                                              xps_hist[i, k],
